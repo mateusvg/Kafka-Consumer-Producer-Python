@@ -1,0 +1,67 @@
+Referências utilizadas:
+tutoriais:
+https://www.goavega.com/install-apache-kafka-on-windows/
+https://timber.io/blog/hello-world-in-kafka-using-python/#kafka-producer
+
+https://towardsdatascience.com/kafka-python-explained-in-10-lines-of-code-800e3e07dad1
+https://www.youtube.com/watch?v=_H4BsmU5AE0
+https://kontext.tech/column/streaming-analytics/473/apache-kafka-python-clients-introduction
+https://kafka-python.readthedocs.io/en/master/apidoc/KafkaProducer.html
+
+
+requisitos:
+JAVA 8 SDK
+kafka binary: 2.3 (Compativel com a biblioteca PYTHON)
+python 3.8 (Compativel com a biblioteca PYTHON)
+
+Baixar Kafka (2.4) ou inferior, pois a biblioteca do python somente suporta estas versões do kafka
+descompactar
+dentro da pasta DATA criar duas novas PASTAS denominadas: kafka e zookeeper (caso não exista a basta DATA criar)
+Noma formação de pastas no diretorio principal: bin, config, data,libs,logs,site-docs
+Apontar os novos caminhos das pastas criadas para zookeeper e kafka nos arquivos:
+
+	Atualizar o caminho do diretorio zookeeper “config/zookeeper.Properties”
+	LINHA dataDIR=:/meudiretorioKafka/data/zookeeper
+
+	Atualizar o caminho do diretorio kafka no arquivo:  “config/server.properties”
+	LINHA log.dirs=D:/meudiretorioKafka/data/kafka
+
+.code
+instala a biblioteca KAFKA PYTHON
+pip install kafka-python
+
+
+no diretório do bin/windows digitar cmd na barra de navegador
+***INICIA O ZOOKEEPER***
+zookeeper-server-start.bat ../../config/zookeeper.Properties
+
+***INICIA O KAFKA***
+kafka-server-start.bat ../../config/server.properties
+
+***CRIAR TÓPICOS***
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic NOMEMEUDOTOPICO
+
+***LISTA TODOS OS TOPICOS CRIADOS DENTRO DE UM BROKER***
+kafka-topics.bat --list --zookeeper localhost:2181
+
+***VER MENSAGENS DOS TOPICOS***
+kafka-console-consumer.bat --bootstrap-server localhost:2181 --topic NOMEMEUDOTOPICO --from-beginning
+
+***DELETA TOPICOS***
+zookeeper-shell localhost:2181
+rmr /brokers/topics/{topic_name}
+rmr /admin/delete_topics/{topic_name}
+
+	no arquivo:
+	setar no arquivo "config/server.properties" o codigo
+	delete.topic.enable=true
+
+***COMANDOS IMPORTANTES MAS NÃO UTILIZADOS***
+kafka-topics  --delete --zookeeper localhost:2181  --topic sample
+kafka-configs.bat --zookeeper localhost:2181 --alter --entity-type topics --entity-name NOMEMEUDOTOPICO --add-config retention.ms=100
+kafka-configs.bat --zookeeper localhost:2181 --alter --entity-type topics --entity-name NOMEMEUDOTOPICO --delete-config retention.ms
+
+
+PARA TESTE:
+FECHAR A ABA DO CONSUMIDOR E ENVIAR UMA MENSAGEM PELO PRODUTOR.
+AO ABRIR A ABA DE CONSUMIDOR, VC VERÁ A MENSAGEM RECUPERADA PELO KAFKA
